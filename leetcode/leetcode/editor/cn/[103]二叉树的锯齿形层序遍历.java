@@ -37,8 +37,8 @@
 
 //leetcode submit region begin(Prohibit modification and deletion)
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -63,23 +63,47 @@ class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 
         List<List<Integer>> res = new ArrayList<>();
-        Queue<TreeNode> queue = new ArrayQueue<>();
-        queue.add(root);
-        boolean flag = false;
-        while (!queue.isEmpty()) {
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue1 = new ArrayDeque<>();
+        Queue<TreeNode> queue2 = new ArrayDeque<>();
+        queue1.add(root);
+//        System.out.println("i ");
+        while (!queue1.isEmpty() || !queue2.isEmpty()) {
             List<Integer> list = new ArrayList<>();
-            TreeNode node = queue.poll();
-            list.add(node.val);
-            Stack<TreeNode> stack = new Stack<TreeNode>();
-            if (!flag) {
-                if (node.right != null) {
-                    stack.add(node.right);
-                }
-                if (node.left != null) {
-                    stack.add(node.left);
+            if (!queue1.isEmpty()) {
+                while (!queue1.isEmpty()) {
+                    TreeNode node = queue1.poll();
+                    list.add(node.val);
+                    if (node.left != null) {
+                        queue2.add(node.left);
+                    }
+                    if (node.right != null) {
+                        queue2.add(node.right);
+                    }
                 }
             }
+             else {
+                Stack<Integer> stack = new Stack();
+                while (!queue2.isEmpty()) {
+                    TreeNode node = queue2.poll();
+                    stack.add(node.val);
+                    if (node.left != null) {
+                        queue1.add(node.left);
+                    }
+                    if (node.right != null) {
+                        queue1.add(node.right);
+                    }
+                }
+                while (!stack.empty()) {
+                    list.add(stack.pop());
+                }
+            }
+             res.add(list);
+             System.out.println("i " +list);
         }
+        return res;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
